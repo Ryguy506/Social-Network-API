@@ -58,4 +58,45 @@ catch (err) {
 
 }
 },
+
+async deleteUser(req, res) {
+    try {
+    const deleteUser =  await user.findOneAndDelete({ _id: req.params.id } );
+        
+  await thought.deleteMany({ _id: { $in: deleteUser.thoughts } })
+
+    res.status(200).json({ message: 'User and thoughts deleted' });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    }
+},
+
+async addFriend(req, res) {
+    try {
+        const addFriend = await user.findOneAndUpdate({ _id: req.params.id }, 
+           { $addToSet: { friends: req.params.friendId }},
+            {new : true}
+            );
+        res.status(200).json(addFriend);
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    }
+},
+async removeFriend(req, res) {
+    try {
+        const removeFriend = await user.findOneAndUpdate({ _id: req.params.id }, 
+           { $pull: { friends: req.params.friendId }},
+            {new : true}
+            );
+        res.status(200).json(removeFriend);
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    }
+}
 }

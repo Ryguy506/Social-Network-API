@@ -54,5 +54,43 @@ await user.findOneAndUpdate({ _id: req.body.userId }, { $push: { thoughts: creat
         }
     },
 
+    async updateThought(req, res) {
 
+        try{
+            await thought.findOneAndUpdate({ _id: req.params.id } , {
+                thoughtText: req.body.thoughtText , username : req.body.username
+                }, { new: true ,runValidators: true})
+            res.status(200).json({message: 'Thought updated'})
+        }
+        catch (err){
+            console.log(err)
+            res.status(500).json(err)
+        }
+    
+}, 
+async addReaction(req, res){
+    try{
+        await thought.findOneAndUpdate({ _id: req.params.id } , {
+            $push: { reactions: {reactionId : req.body.reactionId , reactionBody : req.body.reactionBody , username : req.body.username , createdAt : req.body.createdAt}}
+        })
+        res.status(200).json({message: 'Reaction added'})
+    }
+    catch (err){
+        console.log(err)
+        res.status(500).json(err)
+    }
+}
+,
+async deleteReaction(req, res){
+    try{
+        await thought.findOneAndUpdate({ _id: req.params.id } , {
+            $pull: { reactions: {reactionId : req.body.reactionId}}
+        })
+        res.status(200).json({message: 'Reaction deleted'})
+    }
+    catch (err){
+        console.log(err)
+        res.status(500).json(err)
+    }
+}
 }
