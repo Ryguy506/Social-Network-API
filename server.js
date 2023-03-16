@@ -4,6 +4,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 const db = require('./config/connection');
 
+const routes = require('./routes');
+app.use(routes);
 
 
 const PORT = process.env.PORT || 3001;
